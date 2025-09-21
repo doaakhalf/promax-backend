@@ -25,6 +25,10 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+
+    # Point Apache to Laravel public/
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+&& sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
 # Expose Apache port
 EXPOSE 80
 
