@@ -1,5 +1,5 @@
 # Use official PHP with Apache
-FROM php:8.2-apache
+FROM FROM php:8.2-cli
 
 # Install required PHP extensions
 RUN apt-get update && apt-get install -y \
