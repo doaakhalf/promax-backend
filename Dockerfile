@@ -1,6 +1,7 @@
 # Use official PHP with Apache
 FROM FROM php:8.2-cli
 
+
 # Install required PHP extensions
 RUN apt-get update && apt-get install -y \
     git unzip curl libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev zip \
