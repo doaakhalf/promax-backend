@@ -1,5 +1,5 @@
 # Use official PHP with Apache
-FROM php:8.1-apache
+FROM php:8.1-apache@sha256:<digest>
 
 # Install required PHP extensions
 RUN apt-get update && apt-get install -y \
