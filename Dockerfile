@@ -1,7 +1,7 @@
 # Use official PHP with Apache
 FROM php:8.1-apache
 
-# Install required PHP extensions
+# Install required PHP extensions + tools
 RUN apt-get update && apt-get install -y \
     git unzip curl libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev zip \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
@@ -12,13 +12,14 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer from official image
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Install Composer manually
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+
 # Copy project files
 COPY . .
 
 # Install dependencies (optimized for production)
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache \
