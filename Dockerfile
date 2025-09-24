@@ -1,5 +1,5 @@
 # Use official PHP with Apache
-FROM php:8.1-apache@sha256:<digest>
+FROM php:8.1-apache
 
 # Install required PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -33,13 +33,6 @@ RUN echo '<VirtualHost *:80>\n\
         Require all granted\n\
     </Directory>\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
-
-# Expose port
-EXPOSE 80
-
-# Start Apache
-CMD ["apache2-foreground"]
-
 
 EXPOSE 8080
 ENV APACHE_RUN_USER www-data
