@@ -13,8 +13,7 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Copy composer from official image
-COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
-
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copy project files
 COPY . .
 
