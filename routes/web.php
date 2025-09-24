@@ -21,5 +21,8 @@ Route::get('/home', function () {
     return view('home');
    
 });
+Route::get('/health', function () {
+    return response()->json(['ok' => true]);
+});
 
 
