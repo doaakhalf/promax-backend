@@ -1,45 +1,19 @@
-# Use official PHP with Apache
-FROM php:8.1-apache
-
-# Install required PHP extensions + tools
-RUN apt-get update && apt-get install -y \
-    git unzip curl libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev zip \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
-
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Use Railway PHP image instead of DockerHub
+FROM ghcr.io/railwayapp-templates/php:8.1-apache
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
-# Install Composer manually
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
-
-# Copy project files
+# Copy files
 COPY . .
 
-# Install dependencies (optimized for production)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libzip-dev unzip git && \
+    docker-php-ext-install pdo pdo_mysql zip
 
-# Set permissions
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
-
-# Apache config for Laravel
-RUN echo '<VirtualHost *:80>\n\
-    DocumentRoot /var/www/html/public\n\
-    <Directory /var/www/html/public>\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
-
+# Expose Apache port
 EXPOSE 8080
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
-ENV APACHE_RUN_DIR /var/run/apache2
-ENV APACHE_LOG_DIR /var/log/apache2
-ENV APACHE_LOCK_DIR /var/lock/apache2
-ENV PORT 8080
-CMD ["apache2-foreground", "-D", "FOREGROUND", "-k", "start", "-e", "debug", "-DFOREGROUND"]
+
+# Railway expects Apache to run on port 8080
+CMD ["apache2-foreground"]
